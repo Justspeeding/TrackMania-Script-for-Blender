@@ -492,7 +492,7 @@ class JS_OT_WheelMin(bpy.types.Operator):
         
         return {'FINISHED'}
     
-    
+   
     # Flames
     
 class JS_OT_Flames(bpy.types.Operator):
