@@ -90,9 +90,9 @@ class JS_PT_panel2(bpy.types.Panel):
         row = layout.row()
         row.operator("myops.add_curs", icon='ARROW_LEFTRIGHT')
         row = layout.row()
-        row.operator("myops.add_origintocursor", icon='ADD')
+        row.operator("myops.add_origintocursor", icon='EMPTY_DATA')
         row = layout.row()		       
-        row.operator("myops.add_applyrotsca", icon='NDOF_DOM')
+        row.operator("myops.add_applyrotsca", icon='EMPTY_DATA')
         row = layout.row()
         row.operator("myops.add_edit", icon='OBJECT_DATA')
  #panel3       
