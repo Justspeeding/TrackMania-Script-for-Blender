@@ -23,7 +23,6 @@
 
 
 
-
 # Blender requires addons to provide this information.
 bl_info = {
     "name": "TM script",
