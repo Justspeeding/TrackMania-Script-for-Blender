@@ -23,17 +23,17 @@
 
 
 
+
 # Blender requires addons to provide this information.
 bl_info = {
     "name": "TM script",
     "description": (
-        "Script for Carpark ManiaPark"
-    ),
+    "Script for Carpark ManiaPark"),
     "author": "JustSpeeding",
     "version": (1, 0, 0),
     "blender": (2, 80, 0),
     "location": ("3D View > N Panel > TM tab, and"),
-    "warning": ("Operations on objects with non-uniform scaling are "),
+    "warning": (" "),
     "wiki_url": ("https://github.com/Justspeeding/TM_Script-2.79b/wiki"),
     "support": "COMMUNITY",
     "category": "Mesh"
@@ -62,6 +62,9 @@ class JS_PT_panel1(bpy.types.Panel):
         row.label(text="Active object is: " + obj.name)
         row = layout.row()
         row.prop(obj, "name")
+        row = layout.row()
+        row.operator("myops.add_sharp", icon='OBJECT_DATA')
+        row.operator("myops.add_smooth", icon='OBJECT_DATA')
         
  #panel2       
 class JS_PT_panel2(bpy.types.Panel):
@@ -247,7 +250,7 @@ class JS_OT_EditMode(bpy.types.Operator):
 
         # Origin mode on
 class JS_OT_Origin(bpy.types.Operator):
-    """switch edit object mode"""
+    """switch Origin mode On"""
     bl_idname = "myops.add_origin"
     bl_label = "origin On"
     bl_options = {'REGISTER', 'UNDO'}
@@ -257,13 +260,37 @@ class JS_OT_Origin(bpy.types.Operator):
         return {'FINISHED'}
            # Origin mode off
 class JS_OT_OriginOff(bpy.types.Operator):
-    """switch edit object mode"""
+    """switch origin mode off"""
     bl_idname = "myops.add_originoff"
     bl_label = "origin Off"
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
         bpy.context.scene.tool_settings.use_transform_data_origin = False
+        return {'FINISHED'}
+    
+               # Sharp edge
+               
+class JS_OT_Sharp(bpy.types.Operator):
+    """Mark edge sharp"""
+    bl_idname = "myops.add_sharp"
+    bl_label = "Sharp Edge"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        bpy.ops.mesh.mark_sharp()
+        return {'FINISHED'}
+    
+                   # Smooth edge
+               
+class JS_OT_Smooth(bpy.types.Operator):
+    """Mark edge smooth"""
+    bl_idname = "myops.add_smooth"
+    bl_label = "Smooth Edge"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        bpy.ops.mesh.mark_sharp(clear=True)
         return {'FINISHED'}
         
  
@@ -676,6 +703,8 @@ classes = (
     JS_OT_EditMode,
     JS_OT_Origin,
     JS_OT_OriginOff,
+    JS_OT_Sharp,
+    JS_OT_Smooth,
     JS_OT_FakeShad,
     JS_OT_ProjShad,
     JS_OT_MaxBox,
@@ -702,6 +731,8 @@ def register():
     bpy.utils.register_class(JS_OT_EditMode)
     bpy.utils.register_class(JS_OT_Origin)
     bpy.utils.register_class(JS_OT_OriginOff)
+    bpy.utils.register_class(JS_OT_Sharp)
+    bpy.utils.register_class(JS_OT_Smooth)
     bpy.utils.register_class(JS_OT_FakeShad)
     bpy.utils.register_class(JS_OT_ProjShad)
     bpy.utils.register_class(JS_OT_MaxBox)
@@ -724,6 +755,8 @@ def unregister():
     bpy.utils.unregister_class(JS_OT_EditMode)
     bpy.utils.unregister_class(JS_OT_Origin)
     bpy.utils.unregister_class(JS_OT_OriginOff)
+    bpy.utils.unregister_class(JS_OT_Sharp)
+    bpy.utils.unregister_class(JS_OT_Smooth)
     bpy.utils.unregister_class(JS_OT_FakeShad)
     bpy.utils.unregister_class(JS_OT_ProjShad)
     bpy.utils.unregister_class(JS_OT_MaxBox)
