@@ -28,13 +28,12 @@
 bl_info = {
     "name": "TM script",
     "description": (
-        "Script for Carpark ManiaPark"
-    ),
+    "Script for Carpark ManiaPark"),
     "author": "JustSpeeding",
-    "version": (1, 0, 3),
+    "version": (1, 0, 0),
     "blender": (2, 80, 0),
     "location": ("3D View > N Panel > TM tab, and"),
-    "warning": (""),
+    "warning": (" "),
     "wiki_url": ("https://github.com/Justspeeding/TM_Script-2.79b/wiki"),
     "support": "COMMUNITY",
     "category": "Mesh"
@@ -47,7 +46,7 @@ class JS_PT_panel1(bpy.types.Panel):
     bl_idname = "JS_PT_panel1"
     bl_label = "ObjectData" 
     bl_space_type = "VIEW_3D"
-    bl_region_type = 'TOOLS' if bpy.app.version < (2, 80) else 'UI'
+    bl_region_type = "UI"
     bl_category = "TM"
     
 
@@ -63,14 +62,16 @@ class JS_PT_panel1(bpy.types.Panel):
         row.label(text="Active object is: " + obj.name)
         row = layout.row()
         row.prop(obj, "name")
-
-
+        row = layout.row()
+        row.operator("myops.add_sharp", icon='OBJECT_DATA')
+        row.operator("myops.add_smooth", icon='OBJECT_DATA')
+        
  #panel2       
 class JS_PT_panel2(bpy.types.Panel):
     bl_idname = "JS_PT_panel2"
     bl_label = "Suspention Helpers"
     bl_space_type = "VIEW_3D"
-    bl_region_type = 'TOOLS' if bpy.app.version < (2, 80) else 'UI'
+    bl_region_type = "UI"
     bl_category = "TM"
     
 
@@ -82,25 +83,31 @@ class JS_PT_panel2(bpy.types.Panel):
         col = layout.column(align=True)
         obj = context.active_object
         obj = context.object
+        row = layout.row()
+        col = layout.column(align=True)
+        col = layout.column(align=True)
         col.operator_menu_enum("object.origin_set", "type", text="Set Origin")
         row = layout.row()
-        row.operator("myops.add_selcurs", icon='EMPTY_DATA')
+        row.operator("myops.add_selcurs", icon='ARROW_LEFTRIGHT')
         row = layout.row()
-        row.operator("myops.add_cursortoselection", icon='OUTLINER_OB_EMPTY')
+        row.operator("myops.add_cursortoselection", icon='ARROW_LEFTRIGHT')
         row = layout.row()
         row.operator("myops.add_curs", icon='ARROW_LEFTRIGHT')
         row = layout.row()
-        row.operator("myops.add_origintocursor", icon='EMPTY_DATA')
+        row.operator("myops.add_origintocursor", icon='ADD')
         row = layout.row()		       
-        row.operator("myops.add_applyrotsca", icon='EMPTY_DATA')
+        row.operator("myops.add_applyrotsca", icon='NDOF_DOM')
         row = layout.row()
         row.operator("myops.add_edit", icon='OBJECT_DATA')
+        row = layout.row()
+        row.operator("myops.add_origin", icon='OBJECT_DATA')
+        row.operator("myops.add_originoff", icon='OBJECT_DATA')
  #panel3       
 class JS_PT_panel3(bpy.types.Panel):
     bl_idname = "JS_PT_panel3"
     bl_label = "Add TM Objects"
     bl_space_type = "VIEW_3D"
-    bl_region_type = 'TOOLS' if bpy.app.version < (2, 80) else 'UI'
+    bl_region_type = "UI"
     bl_category = "TM"
     
 
@@ -116,8 +123,10 @@ class JS_PT_panel3(bpy.types.Panel):
        
         row = layout.row()
         row.operator("myops.add_maxbox" , icon='MESH_CUBE')       
-		
-                        
+        
+        row = layout.row()
+        row.operator("myops.add_lightfproj" , icon='LIGHT')   	
+                
         row = layout.row()
         row.operator("myops.add_wheelmin" , icon='AUTO')     
 
@@ -129,7 +138,7 @@ class JS_PT_panel4(bpy.types.Panel):
     bl_idname = "JS_PT_panel4"
     bl_label = "Add TMUF Objects"
     bl_space_type = "VIEW_3D"
-    bl_region_type = 'TOOLS' if bpy.app.version < (2, 80) else 'UI'
+    bl_region_type = "UI"
     bl_category = "TM"
     
 
@@ -141,17 +150,17 @@ class JS_PT_panel4(bpy.types.Panel):
        
         row = layout.row()
         row.operator("myops.add_projshad" , icon='MESH_PLANE')
-        row = layout.row() 	
-        row.operator("myops.add_light" , icon='RADIOBUT_ON') 
         row = layout.row()
-        row.operator("myops.add_lightfproj" , icon='RADIOBUT_OFF')  
+        row.operator("myops.add_lightfproj" , icon='LIGHT')  
+        row = layout.row() 	
+        row.operator("myops.add_light" , icon='LIGHT') 
         
  #panel5      
 class JS_PT_panel5(bpy.types.Panel):
     bl_idname = "JS_PT_panel5"
     bl_label = "Add Modifier"
     bl_space_type = "VIEW_3D"
-    bl_region_type = 'TOOLS' if bpy.app.version < (2, 80) else 'UI'
+    bl_region_type = "UI"
     bl_category = "TM"
     
 
@@ -167,9 +176,6 @@ class JS_PT_panel5(bpy.types.Panel):
         row.operator("object.modifier_add", text="ARRAY", icon="MOD_ARRAY").type='ARRAY'
         row = layout.row()
         row.operator("object.modifier_add", text="DECIMATE", icon="MOD_DECIM").type='DECIMATE'  
- 
- 
- 
         
 # apply rotation and scale  'Xform 3dsmax'
 class JS_OT_ApplyRotSca(bpy.types.Operator):
@@ -183,7 +189,7 @@ class JS_OT_ApplyRotSca(bpy.types.Operator):
         self.report({'INFO'}, "reset Done")
         return {'FINISHED'}
     
-		# Selection To Cursor 
+        # Selection To Cursor 
 class JS_OT_SelCurs(bpy.types.Operator):
     """set selection to cursor"""
     bl_idname = "myops.add_selcurs"
@@ -193,8 +199,8 @@ class JS_OT_SelCurs(bpy.types.Operator):
     def execute(self, context):
         bpy.ops.view3d.snap_selected_to_cursor(use_offset=False)
         return {'FINISHED'}
-		
-			# set Cursor 0.0.0
+        
+            # set Cursor 0.0.0
 class JS_OT_Cursor(bpy.types.Operator):
     """set cursor to 0.0.0"""
     bl_idname = "myops.add_curs"
@@ -202,10 +208,12 @@ class JS_OT_Cursor(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
-        bpy.context.scene.cursor_location = (0.0, 0.0, 0.0)
+        bpy.context.scene.cursor.location[0] = 0
+        bpy.context.scene.cursor.location[1] = 0
+        bpy.context.scene.cursor.location[2] = 0	
         return {'FINISHED'}
 
-		# Cursor To Selection
+        # Cursor To Selection
 class JS_OT_CursorTOSelection(bpy.types.Operator):
     """set cursor to selection"""
     bl_idname = "myops.add_cursortoselection"
@@ -216,7 +224,7 @@ class JS_OT_CursorTOSelection(bpy.types.Operator):
         bpy.ops.view3d.snap_cursor_to_selected()
         return {'FINISHED'}
 
-		# Origin TO Cursor
+        # Origin TO Cursor
 class JS_OT_OriginToCursor(bpy.types.Operator):
     """set origin to cursor """
     bl_idname = "myops.add_origintocursor"
@@ -228,7 +236,7 @@ class JS_OT_OriginToCursor(bpy.types.Operator):
         bpy.ops.object.origin_set(type='ORIGIN_CURSOR')
         return {'FINISHED'}
 
-		# Edit objectmode
+        # Edit objectmode
 class JS_OT_EditMode(bpy.types.Operator):
     """switch edit object mode"""
     bl_idname = "myops.add_edit"
@@ -240,7 +248,51 @@ class JS_OT_EditMode(bpy.types.Operator):
         return {'FINISHED'}
 
 
- 		# Edit objectmode
+        # Origin mode on
+class JS_OT_Origin(bpy.types.Operator):
+    """switch Origin mode On"""
+    bl_idname = "myops.add_origin"
+    bl_label = "origin On"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        bpy.context.scene.tool_settings.use_transform_data_origin = True
+        return {'FINISHED'}
+           # Origin mode off
+class JS_OT_OriginOff(bpy.types.Operator):
+    """switch origin mode off"""
+    bl_idname = "myops.add_originoff"
+    bl_label = "origin Off"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        bpy.context.scene.tool_settings.use_transform_data_origin = False
+        return {'FINISHED'}
+    
+               # Sharp edge
+               
+class JS_OT_Sharp(bpy.types.Operator):
+    """Mark edge sharp"""
+    bl_idname = "myops.add_sharp"
+    bl_label = "Sharp Edge"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        bpy.ops.mesh.mark_sharp()
+        return {'FINISHED'}
+    
+                   # Smooth edge
+               
+class JS_OT_Smooth(bpy.types.Operator):
+    """Mark edge smooth"""
+    bl_idname = "myops.add_smooth"
+    bl_label = "Smooth Edge"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        bpy.ops.mesh.mark_sharp(clear=True)
+        return {'FINISHED'}
+        
  
  #fakeshad
 class JS_OT_FakeShad(bpy.types.Operator):
@@ -250,7 +302,10 @@ class JS_OT_FakeShad(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
-        bpy.context.scene.cursor_location = (0.0, 0.0, 0.0)
+        bpy.context.scene.tool_settings.use_transform_data_origin = False
+        bpy.context.scene.cursor.location[0] = 0.0
+        bpy.context.scene.cursor.location[1] = 0.0
+        bpy.context.scene.cursor.location[2] = 0.0
         bpy.ops.mesh.primitive_plane_add()
         ob = bpy.context.object
         me = ob.data
@@ -260,11 +315,10 @@ class JS_OT_FakeShad(bpy.types.Operator):
         bpy.ops.transform.translate(value=(0, 0,-0.03))
         bpy.ops.object.editmode_toggle()
         bpy.ops.uv.unwrap(method='ANGLE_BASED', margin=0.00)
-        bpy.ops.transform.rotate(value=-1.5708, axis=(1, 0, 0), constraint_axis=(True, False, False))
+        bpy.ops.transform.rotate(value=1.5708, orient_axis='X', constraint_axis=(True, False, False))
         bpy.ops.object.editmode_toggle()
         bpy.ops.object.transform_apply(location=False, rotation=True, scale=True)
-        bpy.ops.transform.rotate(value=1.5708, axis=(1, 0, 0), constraint_axis=(True, False, False))
-
+        bpy.ops.transform.rotate(value=1.5708, orient_axis='X', constraint_axis=(True, False, False))
         
        
 
@@ -280,7 +334,10 @@ class JS_OT_ProjShad(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
-        bpy.context.scene.cursor_location = (0.0, 0.0, 0.0)
+        bpy.context.scene.tool_settings.use_transform_data_origin = False
+        bpy.context.scene.cursor.location[0] = 0
+        bpy.context.scene.cursor.location[1] = 0
+        bpy.context.scene.cursor.location[2] = 0 
         bpy.ops.mesh.primitive_plane_add()
         ob = bpy.context.object
         me = ob.data
@@ -290,10 +347,10 @@ class JS_OT_ProjShad(bpy.types.Operator):
         bpy.ops.transform.translate(value=(0, 0,-0.03))
         bpy.ops.object.editmode_toggle()
         bpy.ops.uv.unwrap(method='ANGLE_BASED', margin=0.00)
-        bpy.ops.transform.rotate(value=-1.5708, axis=(1, 0, 0), constraint_axis=(True, False, False))
+        bpy.ops.transform.rotate(value=-1.5708, orient_axis='X', constraint_axis=(True, False, False))
         bpy.ops.object.editmode_toggle()
         bpy.ops.object.transform_apply(location=False, rotation=True, scale=True)
-        bpy.ops.transform.rotate(value=1.5708, axis=(1, 0, 0), constraint_axis=(True, False, False))
+        bpy.ops.transform.rotate(value=1.5708, orient_axis='X', constraint_axis=(True, False, False))
 
         
         return {'FINISHED'}
@@ -306,7 +363,10 @@ class JS_OT_MaxBox(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
-        bpy.context.scene.cursor_location = (0.0, 0.0, 0.0)
+        bpy.context.scene.tool_settings.use_transform_data_origin = False
+        bpy.context.scene.cursor.location[0] = 0    
+        bpy.context.scene.cursor.location[1] = 0
+        bpy.context.scene.cursor.location[2] = 0
         bpy.ops.mesh.primitive_cube_add()
         ob = bpy.context.object
         me = ob.data
@@ -329,7 +389,10 @@ class JS_OT_LightFProj(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
-        bpy.context.scene.cursor_location = (0.0, 0.0, 0.0)
+        bpy.context.scene.tool_settings.use_transform_data_origin = False
+        bpy.context.scene.cursor.location[0] = 0
+        bpy.context.scene.cursor.location[1] = 0
+        bpy.context.scene.cursor.location[2] = 0 
         bpy.ops.mesh.primitive_plane_add()
         ob = bpy.context.object
         me = ob.data
@@ -337,15 +400,15 @@ class JS_OT_LightFProj(bpy.types.Operator):
         me.name = 'LightFProj'
         bpy.ops.transform.resize(value=(0.05, 0.05,0))
         bpy.ops.transform.translate(value=(0, -2.20, 0.58))
-        bpy.ops.transform.rotate(value=1.5708, axis=(1, 0, 0), constraint_axis=(True, False, False), constraint_orientation='GLOBAL', mirror=False, proportional='DISABLED', proportional_edit_falloff='SMOOTH', proportional_size=1)
+        bpy.ops.transform.rotate(value=-1.5708, orient_axis='X', constraint_axis=(True, False, False))
         bpy.ops.object.editmode_toggle()
         bpy.ops.uv.unwrap(method='ANGLE_BASED', margin=0.00)
         bpy.ops.object.editmode_toggle()
         bpy.ops.object.transform_apply(location=False, rotation=True, scale=True)
         return {'FINISHED'}
-		
-		#Ligts
-		
+        
+        #Ligts
+        
 class JS_OT_Light(bpy.types.Operator):
     """Make Lights"""
     bl_idname = "myops.add_light"
@@ -353,7 +416,10 @@ class JS_OT_Light(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 #RR
     def execute(self, context):
-        bpy.context.scene.cursor_location = (0.0, 0.0, 0.0)
+        bpy.context.scene.tool_settings.use_transform_data_origin = False
+        bpy.context.scene.cursor.location[0] = 0
+        bpy.context.scene.cursor.location[1] = 0
+        bpy.context.scene.cursor.location[2] = 0 
         bpy.ops.mesh.primitive_plane_add()
         ob = bpy.context.object
         me = ob.data
@@ -361,7 +427,7 @@ class JS_OT_Light(bpy.types.Operator):
         me.name = 'LightRR'
         bpy.ops.transform.resize(value=(0.05, 0.05,0))
         bpy.ops.transform.translate(value=(-0.7,2.14,0.8))
-        bpy.ops.transform.rotate(value=-1.5708, axis=(1, 0, 0), constraint_axis=(True, False, False), constraint_orientation='GLOBAL', mirror=False, proportional='DISABLED', proportional_edit_falloff='SMOOTH', proportional_size=1)
+        bpy.ops.transform.rotate(value=-1.5708, orient_axis='X', constraint_axis=(True, False, False))
         bpy.ops.object.editmode_toggle()
         bpy.ops.uv.unwrap(method='ANGLE_BASED', margin=0.00)
         bpy.ops.object.editmode_toggle()
@@ -374,7 +440,7 @@ class JS_OT_Light(bpy.types.Operator):
         me.name = 'LightRL'
         bpy.ops.transform.resize(value=(0.05, 0.05,0))
         bpy.ops.transform.translate(value=(0.7,2.14,0.8))
-        bpy.ops.transform.rotate(value=-1.5708, axis=(1, 0, 0), constraint_axis=(True, False, False), constraint_orientation='GLOBAL', mirror=False, proportional='DISABLED', proportional_edit_falloff='SMOOTH', proportional_size=1)
+        bpy.ops.transform.rotate(value=-1.5708, orient_axis='X', constraint_axis=(True, False, False))
         bpy.ops.object.editmode_toggle()
         bpy.ops.uv.unwrap(method='ANGLE_BASED', margin=0.00)
         bpy.ops.object.editmode_toggle() 
@@ -388,7 +454,7 @@ class JS_OT_Light(bpy.types.Operator):
         me.name = 'LightFR1'
         bpy.ops.transform.resize(value=(0.05, 0.05,0))
         bpy.ops.transform.translate(value=(-0.78,-1.95,0.58))
-        bpy.ops.transform.rotate(value=1.5708, axis=(1, 0, 0), constraint_axis=(True, False, False), constraint_orientation='GLOBAL', mirror=False, proportional='DISABLED', proportional_edit_falloff='SMOOTH', proportional_size=1)
+        bpy.ops.transform.rotate(value=1.5708, orient_axis='X', constraint_axis=(True, False, False))
         bpy.ops.object.editmode_toggle()
         bpy.ops.uv.unwrap(method='ANGLE_BASED', margin=0.00)
         bpy.ops.object.editmode_toggle() 
@@ -402,7 +468,7 @@ class JS_OT_Light(bpy.types.Operator):
         me.name = 'LightFR2'
         bpy.ops.transform.resize(value=(0.05, 0.05,0))
         bpy.ops.transform.translate(value=(-0.675,-1.95,0.516))
-        bpy.ops.transform.rotate(value=1.5708, axis=(1, 0, 0), constraint_axis=(True, False, False), constraint_orientation='GLOBAL', mirror=False, proportional='DISABLED', proportional_edit_falloff='SMOOTH', proportional_size=1)
+        bpy.ops.transform.rotate(value=1.5708, orient_axis='X', constraint_axis=(True, False, False))
         bpy.ops.object.editmode_toggle()
         bpy.ops.uv.unwrap(method='ANGLE_BASED', margin=0.00)
         bpy.ops.object.editmode_toggle() 
@@ -416,7 +482,7 @@ class JS_OT_Light(bpy.types.Operator):
         me.name = 'LightFR3'
         bpy.ops.transform.resize(value=(0.05, 0.05,0))
         bpy.ops.transform.translate(value=(-0.57,-1.95,0.452))
-        bpy.ops.transform.rotate(value=1.5708, axis=(1, 0, 0), constraint_axis=(True, False, False), constraint_orientation='GLOBAL', mirror=False, proportional='DISABLED', proportional_edit_falloff='SMOOTH', proportional_size=1)
+        bpy.ops.transform.rotate(value=1.5708, orient_axis='X', constraint_axis=(True, False, False))
         bpy.ops.object.editmode_toggle()
         bpy.ops.uv.unwrap(method='ANGLE_BASED', margin=0.00)
         bpy.ops.object.editmode_toggle()
@@ -430,7 +496,7 @@ class JS_OT_Light(bpy.types.Operator):
         me.name = 'LightFL1'
         bpy.ops.transform.resize(value=(0.05, 0.05,0))
         bpy.ops.transform.translate(value=(0.78,-1.95,0.58))
-        bpy.ops.transform.rotate(value=1.5708, axis=(1, 0, 0), constraint_axis=(True, False, False), constraint_orientation='GLOBAL', mirror=False, proportional='DISABLED', proportional_edit_falloff='SMOOTH', proportional_size=1)
+        bpy.ops.transform.rotate(value=1.5708, orient_axis='X', constraint_axis=(True, False, False))
         bpy.ops.object.editmode_toggle()
         bpy.ops.uv.unwrap(method='ANGLE_BASED', margin=0.00)
         bpy.ops.object.editmode_toggle() 
@@ -444,7 +510,7 @@ class JS_OT_Light(bpy.types.Operator):
         me.name = 'LightFL2'
         bpy.ops.transform.resize(value=(0.05, 0.05,0))
         bpy.ops.transform.translate(value=(0.675,-1.95,0.516))
-        bpy.ops.transform.rotate(value=1.5708, axis=(1, 0, 0), constraint_axis=(True, False, False), constraint_orientation='GLOBAL', mirror=False, proportional='DISABLED', proportional_edit_falloff='SMOOTH', proportional_size=1)
+        bpy.ops.transform.rotate(value=1.5708, orient_axis='X', constraint_axis=(True, False, False))
         bpy.ops.object.editmode_toggle()
         bpy.ops.uv.unwrap(method='ANGLE_BASED', margin=0.00)
         bpy.ops.object.editmode_toggle() 
@@ -458,7 +524,7 @@ class JS_OT_Light(bpy.types.Operator):
         me.name = 'LightFL3'
         bpy.ops.transform.resize(value=(0.05, 0.05,0))
         bpy.ops.transform.translate(value=(0.57,-1.95,0.452))
-        bpy.ops.transform.rotate(value=1.5708, axis=(1, 0, 0), constraint_axis=(True, False, False), constraint_orientation='GLOBAL', mirror=False, proportional='DISABLED', proportional_edit_falloff='SMOOTH', proportional_size=1)
+        bpy.ops.transform.rotate(value=1.5708, orient_axis='X', constraint_axis=(True, False, False))
         bpy.ops.object.editmode_toggle()
         bpy.ops.uv.unwrap(method='ANGLE_BASED', margin=0.00)
         bpy.ops.object.editmode_toggle()
@@ -477,7 +543,10 @@ class JS_OT_WheelMin(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
-        bpy.context.scene.cursor_location = (0.0, 0.0, 0.0)
+        bpy.context.scene.tool_settings.use_transform_data_origin = False
+        bpy.context.scene.cursor.location[0] = 0
+        bpy.context.scene.cursor.location[1] = 0
+        bpy.context.scene.cursor.location[2] = 0 
         bpy.ops.mesh.primitive_plane_add()
         ob = bpy.context.object
         me = ob.data
@@ -492,7 +561,7 @@ class JS_OT_WheelMin(bpy.types.Operator):
         
         return {'FINISHED'}
     
-   
+    
     # Flames
     
 class JS_OT_Flames(bpy.types.Operator):
@@ -503,7 +572,10 @@ class JS_OT_Flames(bpy.types.Operator):
     
 #FLAME1
     def execute(self, context):
-        bpy.context.scene.cursor_location = (0.0, 0.0, 0.0)
+        bpy.context.scene.tool_settings.use_transform_data_origin = False
+        bpy.context.scene.cursor.location[0] = 0
+        bpy.context.scene.cursor.location[1] = 0
+        bpy.context.scene.cursor.location[2] = 0
         bpy.ops.mesh.primitive_plane_add()
         ob = bpy.context.object
         me = ob.data
@@ -511,7 +583,7 @@ class JS_OT_Flames(bpy.types.Operator):
         me.name = 'Exhaust1'
         bpy.ops.transform.resize(value=(0.05, 0.05,0))
         bpy.ops.transform.translate(value=(-0.7,2.14,0.2))
-        bpy.ops.transform.rotate(value=-1.5708, axis=(1, 0, 0), constraint_axis=(True, False, False), constraint_orientation='GLOBAL', mirror=False, proportional='DISABLED', proportional_edit_falloff='SMOOTH', proportional_size=1)
+        bpy.ops.transform.rotate(value=-1.5708, orient_axis='X', constraint_axis=(True, False, False))
         bpy.ops.object.editmode_toggle()
         bpy.ops.uv.unwrap(method='ANGLE_BASED', margin=0.00)
         bpy.ops.object.editmode_toggle()
@@ -525,7 +597,7 @@ class JS_OT_Flames(bpy.types.Operator):
         me.name = 'Exhaust2'
         bpy.ops.transform.resize(value=(0.05, 0.05,0))
         bpy.ops.transform.translate(value=(-0.54,2.14,0.2))
-        bpy.ops.transform.rotate(value=-1.5708, axis=(1, 0, 0), constraint_axis=(True, False, False), constraint_orientation='GLOBAL', mirror=False, proportional='DISABLED', proportional_edit_falloff='SMOOTH', proportional_size=1)
+        bpy.ops.transform.rotate(value=-1.5708, orient_axis='X', constraint_axis=(True, False, False)) 
         bpy.ops.object.editmode_toggle()
         bpy.ops.uv.unwrap(method='ANGLE_BASED', margin=0.00)
         bpy.ops.object.editmode_toggle() 
@@ -539,7 +611,7 @@ class JS_OT_Flames(bpy.types.Operator):
         me.name = 'Exhaust3'
         bpy.ops.transform.resize(value=(0.05, 0.05,0))
         bpy.ops.transform.translate(value=(-0.38,2.14,0.2))
-        bpy.ops.transform.rotate(value=-1.5708, axis=(1, 0, 0), constraint_axis=(True, False, False), constraint_orientation='GLOBAL', mirror=False, proportional='DISABLED', proportional_edit_falloff='SMOOTH', proportional_size=1)
+        bpy.ops.transform.rotate(value=-1.5708, orient_axis='X', constraint_axis=(True, False, False))
         bpy.ops.object.editmode_toggle()
         bpy.ops.uv.unwrap(method='ANGLE_BASED', margin=0.00)
         bpy.ops.object.editmode_toggle() 
@@ -553,7 +625,7 @@ class JS_OT_Flames(bpy.types.Operator):
         me.name = 'Exhaust4'
         bpy.ops.transform.resize(value=(0.05, 0.05,0))
         bpy.ops.transform.translate(value=(-0.2,2.14,0.2))
-        bpy.ops.transform.rotate(value=-1.5708, axis=(1, 0, 0), constraint_axis=(True, False, False), constraint_orientation='GLOBAL', mirror=False, proportional='DISABLED', proportional_edit_falloff='SMOOTH', proportional_size=1)
+        bpy.ops.transform.rotate(value=-1.5708, orient_axis='X', constraint_axis=(True, False, False)) 
         bpy.ops.object.editmode_toggle()
         bpy.ops.uv.unwrap(method='ANGLE_BASED', margin=0.00)
         bpy.ops.object.editmode_toggle() 
@@ -567,7 +639,7 @@ class JS_OT_Flames(bpy.types.Operator):
         me.name = 'Exhaust5'
         bpy.ops.transform.resize(value=(0.05, 0.05,0))
         bpy.ops.transform.translate(value=(0.2,2.14,0.2))
-        bpy.ops.transform.rotate(value=-1.5708, axis=(1, 0, 0), constraint_axis=(True, False, False), constraint_orientation='GLOBAL', mirror=False, proportional='DISABLED', proportional_edit_falloff='SMOOTH', proportional_size=1)
+        bpy.ops.transform.rotate(value=-1.5708, orient_axis='X', constraint_axis=(True, False, False))
         bpy.ops.object.editmode_toggle()
         bpy.ops.uv.unwrap(method='ANGLE_BASED', margin=0.00)
         bpy.ops.object.editmode_toggle() 
@@ -581,7 +653,7 @@ class JS_OT_Flames(bpy.types.Operator):
         me.name = 'Exhaust6'
         bpy.ops.transform.resize(value=(0.05, 0.05,0))
         bpy.ops.transform.translate(value=(0.38,2.14,0.2))
-        bpy.ops.transform.rotate(value=-1.5708, axis=(1, 0, 0), constraint_axis=(True, False, False), constraint_orientation='GLOBAL', mirror=False, proportional='DISABLED', proportional_edit_falloff='SMOOTH', proportional_size=1)
+        bpy.ops.transform.rotate(value=-1.5708, orient_axis='X', constraint_axis=(True, False, False)) 
         bpy.ops.object.editmode_toggle()
         bpy.ops.uv.unwrap(method='ANGLE_BASED', margin=0.00)
         bpy.ops.object.editmode_toggle() 
@@ -595,7 +667,7 @@ class JS_OT_Flames(bpy.types.Operator):
         me.name = 'Exhaust7'
         bpy.ops.transform.resize(value=(0.05, 0.05,0))
         bpy.ops.transform.translate(value=(0.54,2.14,0.2))
-        bpy.ops.transform.rotate(value=-1.5708, axis=(1, 0, 0), constraint_axis=(True, False, False), constraint_orientation='GLOBAL', mirror=False, proportional='DISABLED', proportional_edit_falloff='SMOOTH', proportional_size=1)
+        bpy.ops.transform.rotate(value=-1.5708, orient_axis='X', constraint_axis=(True, False, False))
         bpy.ops.object.editmode_toggle()
         bpy.ops.uv.unwrap(method='ANGLE_BASED', margin=0.00)
         bpy.ops.object.editmode_toggle()
@@ -609,7 +681,7 @@ class JS_OT_Flames(bpy.types.Operator):
         me.name = 'Exhaust8'
         bpy.ops.transform.resize(value=(0.05, 0.05,0))
         bpy.ops.transform.translate(value=(0.7,2.14,0.2))
-        bpy.ops.transform.rotate(value=-1.5708, axis=(1, 0, 0), constraint_axis=(True, False, False), constraint_orientation='GLOBAL', mirror=False, proportional='DISABLED', proportional_edit_falloff='SMOOTH', proportional_size=1)
+        bpy.ops.transform.rotate(value=-1.5708, orient_axis='X', constraint_axis=(True, False, False))
         bpy.ops.object.editmode_toggle()
         bpy.ops.uv.unwrap(method='ANGLE_BASED', margin=0.00)
         bpy.ops.object.editmode_toggle() 
@@ -618,7 +690,7 @@ class JS_OT_Flames(bpy.types.Operator):
         return {'FINISHED'} 
 
 classes = (
-	JS_PT_panel1,
+    JS_PT_panel1,
     JS_PT_panel2,
     JS_PT_panel3,
     JS_PT_panel4,
@@ -629,6 +701,10 @@ classes = (
     JS_OT_Cursor,
     JS_OT_OriginToCursor,
     JS_OT_EditMode,
+    JS_OT_Origin,
+    JS_OT_OriginOff,
+    JS_OT_Sharp,
+    JS_OT_Smooth,
     JS_OT_FakeShad,
     JS_OT_ProjShad,
     JS_OT_MaxBox,
@@ -637,18 +713,10 @@ classes = (
     JS_OT_WheelMin,
     JS_OT_Flames
     
-	)
+    )
+register, unregister = bpy.utils.register_classes_factory(classes)
 
-def register():
-    from bpy.utils import register_class
-    for cls in classes:
-        register_class(cls)
 
-def unregister():
-    from bpy.utils import unregister_class
-    for cls in reversed(classes):
-        unregister_class(cls)
-        
 def register():
     bpy.utils.register_class(JS_PT_panel1)
     bpy.utils.register_class(JS_PT_panel2)
@@ -661,6 +729,10 @@ def register():
     bpy.utils.register_class(JS_OT_Cursor)
     bpy.utils.register_class(JS_OT_OriginToCursor)
     bpy.utils.register_class(JS_OT_EditMode)
+    bpy.utils.register_class(JS_OT_Origin)
+    bpy.utils.register_class(JS_OT_OriginOff)
+    bpy.utils.register_class(JS_OT_Sharp)
+    bpy.utils.register_class(JS_OT_Smooth)
     bpy.utils.register_class(JS_OT_FakeShad)
     bpy.utils.register_class(JS_OT_ProjShad)
     bpy.utils.register_class(JS_OT_MaxBox)
@@ -668,7 +740,7 @@ def register():
     bpy.utils.register_class(JS_OT_Light)
     bpy.utils.register_class(JS_OT_WheelMin)
     bpy.utils.register_class(JS_OT_Flames)
-	
+    
 def unregister():
     bpy.utils.unregister_class(JS_PT_panel1)
     bpy.utils.unregister_class(JS_PT_panel2)
@@ -681,6 +753,10 @@ def unregister():
     bpy.utils.unregister_class(JS_OT_Cursor)
     bpy.utils.unregister_class(JS_OT_OriginToCursor)
     bpy.utils.unregister_class(JS_OT_EditMode)
+    bpy.utils.unregister_class(JS_OT_Origin)
+    bpy.utils.unregister_class(JS_OT_OriginOff)
+    bpy.utils.unregister_class(JS_OT_Sharp)
+    bpy.utils.unregister_class(JS_OT_Smooth)
     bpy.utils.unregister_class(JS_OT_FakeShad)
     bpy.utils.unregister_class(JS_OT_ProjShad)
     bpy.utils.unregister_class(JS_OT_MaxBox)
