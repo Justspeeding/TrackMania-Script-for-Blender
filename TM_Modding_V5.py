@@ -356,29 +356,119 @@ class JS_OT_ProjShad(bpy.types.Operator):
         return {'FINISHED'}
 
 #maxbox
+import bgl
+import gpu
+from   gpu_extras.batch import batch_for_shader
+
+class JS_MaxBox:
+
+    x_size = 3.0
+    y_size = 6.0
+    z_size = 2.7
+
+    x_center = 0.0
+    y_center = 0.0
+    z_center = z_size / 2. - 0.2
+
+    color       = (1.0, 0.0, 0.0, 0.7)
+    vertices    = []
+    indices     = []
+    handle      = None
+    shader      = None
+    batch       = None
+
+    def __init__(self):
+
+        (xsz, ysz, zsz) = (self.x_size,     self.y_size,    self.z_size)
+        (xcn, ycn, zcn) = (self.x_center,   self.y_center,  self.z_center)
+
+        fronttopleft        = ( xsz / 2. + xcn, -ysz / 2. + ycn,  zsz / 2. + zcn)
+        fronttopright       = (-xsz / 2. + xcn, -ysz / 2. + ycn,  zsz / 2. + zcn)
+        frontbottomleft     = ( xsz / 2. + xcn, -ysz / 2. + ycn, -zsz / 2. + zcn)
+        frontbottomright    = (-xsz / 2. + xcn, -ysz / 2. + ycn, -zsz / 2. + zcn)
+
+        reartopleft         = ( xsz / 2. + xcn,  ysz / 2. + ycn,  zsz / 2. + zcn)
+        reartopright        = (-xsz / 2. + xcn,  ysz / 2. + ycn,  zsz / 2. + zcn)
+        rearbottomleft      = ( xsz / 2. + xcn,  ysz / 2. + ycn, -zsz / 2. + zcn)
+        rearbottomright     = (-xsz / 2. + xcn,  ysz / 2. + ycn, -zsz / 2. + zcn)
+
+        self.vertices = [
+            fronttopleft,   fronttopright,  frontbottomleft,    frontbottomright,
+            reartopleft,    reartopright,   rearbottomleft,     rearbottomright
+        ]
+
+        self.indices = [
+            (0,1),(0,2),(1,3),(2,3),
+            (4,5),(4,6),(5,7),(6,7),
+            (0,4),(1,5),(2,6),(3,7)
+        ]
+
+    def add(self):
+        self.shader = gpu.shader.from_builtin('3D_UNIFORM_COLOR')
+        self.batch  = batch_for_shader(self.shader, 'LINES', { "pos": self.vertices }, indices=self.indices)
+        self.handle = bpy.types.SpaceView3D.draw_handler_add(self.draw_callback_3d, (), 'WINDOW', 'POST_VIEW')
+
+    def remove(self):
+        if self.handle :
+            bpy.types.SpaceView3D.draw_handler_remove(self.handle, 'WINDOW')
+            self.handle = None
+            self.batch  = None
+            self.shader = None
+
+    def draw_callback_3d(self):
+        bgl.glEnable(bgl.GL_BLEND)
+        bgl.glEnable(bgl.GL_DEPTH_TEST)
+        self.shader.bind()
+        self.shader.uniform_float("color", self.color)
+        self.batch.draw(self.shader)
+
+max_box = None
+
+def show_changed(self,context):
+    if self.box_use:
+        max_box.add()
+    else:
+        max_box.remove()
+    context.area.tag_redraw()
+
+def color_changed(self,context):
+    max_box.color = self.box_color
+    context.area.tag_redraw()
+
 class JS_OT_MaxBox(bpy.types.Operator):
     """Make MaxBox"""
-    bl_idname = "myops.add_maxbox"
-    bl_label = "MaxBox"
-    bl_options = {'REGISTER', 'UNDO'}
+    bl_idname   = "myops.add_maxbox"
+    bl_label    = "MaxBox"
+    bl_options  = {'REGISTER', 'UNDO'}
+
+    box_use : bpy.props.BoolProperty(
+        name="Show",
+        description="Show MaxBox",
+        default=False,
+        update=show_changed)
+    box_color : bpy.props.FloatVectorProperty(
+        name="",
+        subtype='COLOR',
+        default=JS_MaxBox.color,
+        min=0.0,max=1.0,
+        size=4,
+        update=color_changed)
+
+    def __init__(self):
+        global max_box
+        max_box = JS_MaxBox()
+
+    def __del__(self):
+        global max_box
+        max_box.remove()
 
     def execute(self, context):
-        bpy.context.scene.tool_settings.use_transform_data_origin = False
-        bpy.context.scene.cursor.location[0] = 0    
-        bpy.context.scene.cursor.location[1] = 0
-        bpy.context.scene.cursor.location[2] = 0
-        bpy.ops.mesh.primitive_cube_add()
-        ob = bpy.context.object
-        me = ob.data
-        ob.name = 'MaxBox'
-        me.name = 'MaxBox'
-        bpy.ops.transform.resize(value=(1.5, 3, 1.35))
-        bpy.ops.transform.translate(value=(0, 0, 1.15))
-        bpy.ops.object.editmode_toggle()
-        bpy.ops.uv.unwrap(method='ANGLE_BASED', margin=0.00)
-        bpy.ops.object.editmode_toggle()
-        bpy.ops.object.transform_apply(location=False, rotation=True, scale=True)
         return {'FINISHED'}
+
+    def draw(self,context):
+        row = self.layout.row()
+        row.prop(self,"box_use")
+        row.prop(self,"box_color")
 
 #lightFProjProj
 
