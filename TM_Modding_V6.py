@@ -297,7 +297,8 @@ class JS_OT_FakeShad(bpy.types.Operator):
     bl_label = "FakeShad"
     bl_options = {'REGISTER', 'UNDO'}
 
-    def execute(self, context):       
+    def execute(self, context):
+        bpy.context.scene.tool_settings.transform_pivot_point = 'MEDIAN_POINT'
         bpy.context.scene.tool_settings.use_transform_data_origin = False
         bpy.context.scene.cursor.location[0] = 0.0
         bpy.context.scene.cursor.location[1] = 0.0
@@ -329,6 +330,7 @@ class JS_OT_ProjShad(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
+        bpy.context.scene.tool_settings.transform_pivot_point = 'MEDIAN_POINT'
         bpy.context.scene.tool_settings.use_transform_data_origin = False
         bpy.context.scene.cursor.location[0] = 0
         bpy.context.scene.cursor.location[1] = 0
@@ -358,6 +360,7 @@ class JS_OT_MaxBox(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
+        bpy.context.scene.tool_settings.transform_pivot_point = 'MEDIAN_POINT'
         bpy.context.scene.tool_settings.use_transform_data_origin = False
         bpy.context.scene.cursor.location[0] = 0    
         bpy.context.scene.cursor.location[1] = 0
@@ -384,6 +387,7 @@ class JS_OT_LightFProj(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
+        bpy.context.scene.tool_settings.transform_pivot_point = 'MEDIAN_POINT'
         bpy.context.scene.tool_settings.use_transform_data_origin = False
         bpy.context.scene.cursor.location[0] = 0
         bpy.context.scene.cursor.location[1] = 0
@@ -411,6 +415,7 @@ class JS_OT_Light(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 #RR
     def execute(self, context):
+        bpy.context.scene.tool_settings.transform_pivot_point = 'MEDIAN_POINT'
         bpy.context.scene.tool_settings.use_transform_data_origin = False
         bpy.context.scene.cursor.location[0] = 0
         bpy.context.scene.cursor.location[1] = 0
@@ -538,6 +543,7 @@ class JS_OT_WheelMin(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
+        bpy.context.scene.tool_settings.transform_pivot_point = 'MEDIAN_POINT'
         bpy.context.scene.tool_settings.use_transform_data_origin = False
         bpy.context.scene.cursor.location[0] = 0
         bpy.context.scene.cursor.location[1] = 0
@@ -567,6 +573,7 @@ class JS_OT_Flames(bpy.types.Operator):
     
 #FLAME1
     def execute(self, context):
+        bpy.context.scene.tool_settings.transform_pivot_point = 'MEDIAN_POINT'
         bpy.context.scene.tool_settings.use_transform_data_origin = False
         bpy.context.scene.cursor.location[0] = 0
         bpy.context.scene.cursor.location[1] = 0
